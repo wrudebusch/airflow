@@ -1,4 +1,3 @@
-from datetime import datetime
 import requests
 import logging
 import boto3
@@ -49,13 +48,14 @@ def fill_s3(socrata_domain,socrata_dataset_identifier):
         
     if most_recent_check:
         bucket = s3.Bucket(bucket_name)
-        key = item_name + '.json'
+        key = item_name + '-EC2.json'
         ## check the the key (json data) already exists, if not fill it
         objs = list(bucket.objects.filter(Prefix=key))
         if len(objs) > 0 and objs[0].key == key:
             pass
         else:
-            data_url = f"https://{socrata_domain}/resource/{socrata_dataset_identifier}.json"
+            #data_url = f"https://{socrata_domain}/resource/{socrata_dataset_identifier}.json"
+            data_url=f"https://{socrata_domain}/api/views/metadata/v1/{socrata_dataset_identifier}"
             r = requests.get(data_url)
             data = r.json()
             s3object = s3.Object(bucket_name, key)
